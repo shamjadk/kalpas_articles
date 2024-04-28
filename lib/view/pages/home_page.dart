@@ -5,6 +5,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100,
+          title: TabBar(
+              onTap: (value) {},
+              labelPadding: const EdgeInsets.all(16),
+              unselectedLabelColor: Colors.black,
+              labelColor: Colors.black,
+              indicatorColor: Colors.transparent,
+              dividerColor: Colors.transparent,
+              tabs: const [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.list), Text('  News')],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                    Text('  Favs')
+                  ],
+                )
+              ]),
+        ),
+      ),
+    );
   }
 }
