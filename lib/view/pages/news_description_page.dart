@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kalpas_news_app/model/news_model.dart';
 
 class NewsDescriptionPage extends StatelessWidget {
-  const NewsDescriptionPage({super.key});
+  final NewsModel model;
+  const NewsDescriptionPage({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +46,16 @@ class NewsDescriptionPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const Text(
-                'title',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Text(
+                model.title,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 8,
               ),
-              const Text(
-                '📆 Date and time',
-                style: TextStyle(
+              Text(
+                '📆 ${model.publishedAt}',
+                style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: Colors.grey),
@@ -61,7 +63,7 @@ class NewsDescriptionPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const Text('content')
+              Text(model.content)
             ],
           ),
         ),
