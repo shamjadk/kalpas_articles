@@ -29,9 +29,9 @@ class NewsDescriptionPage extends StatelessWidget {
                 height: 160,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    image: const DecorationImage(
-                        image: NetworkImage(
-                            'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'),
+                    image: DecorationImage(
+                        image: NetworkImage(model.urlToImage ??
+                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
                         fit: BoxFit.cover)),
                 child: Align(
                   alignment: Alignment.topRight,
@@ -48,7 +48,8 @@ class NewsDescriptionPage extends StatelessWidget {
               ),
               Text(
                 model.title,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 8,
@@ -63,7 +64,10 @@ class NewsDescriptionPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              Text(model.content)
+              Text(model.content),
+              const SizedBox(
+                height: 16,
+              )
             ],
           ),
         ),
