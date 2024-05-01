@@ -6,10 +6,10 @@ import 'package:path/path.dart' as path;
 class FavsObjectBoxStore {
   static FavsObjectBoxStore? _instance;
   final Store store;
-  late final Box<FavsEntityModel> todoBox;
+  late final Box<FavsEntityModel> favBox;
 
   FavsObjectBoxStore._create(this.store) {
-    todoBox = store.box<FavsEntityModel>();
+    favBox = store.box<FavsEntityModel>();
   }
 
   static FavsObjectBoxStore get instance {

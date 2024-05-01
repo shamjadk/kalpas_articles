@@ -49,7 +49,7 @@ class HomePage extends HookConsumerWidget {
                 ]),
           ),
           body: FutureBuilder(
-              future: ref.read(fetchDataProvider.future),
+              future: ref.read(newsProvider.notifier).fetchData(),
               builder: (context, snapshot) {
                 final data = snapshot.data;
                 if (snapshot.hasData) {
@@ -83,7 +83,8 @@ class HomePage extends HookConsumerWidget {
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                                 image: DecorationImage(
-                                                    image: NetworkImage(data[index]
+                                                    image: NetworkImage(data[
+                                                                index]
                                                             .urlToImage ??
                                                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
                                                     fit: BoxFit.cover)),
