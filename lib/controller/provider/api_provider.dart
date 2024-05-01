@@ -18,7 +18,7 @@ class News extends _$News {
   List<FavsEntityModel>? build() {
     box = FavsObjectBoxStore.instance.favBox;
     try {
-      return box.getAll();
+      return box.getAll().toSet().toList();
     } catch (e) {
       log(e.toString());
     }
@@ -33,10 +33,10 @@ class News extends _$News {
     try {
       box.put(model);
       state = box.getAll();
-      showSnackBar(context, 'Added to favs');
+      showSnackBar(context, 'Added to favs', color: Colors.green);
     } catch (e) {
       log(e.toString());
-      showSnackBar(context, 'An error occured, try again');
+      showSnackBar(context, 'An error occured, try again', color: Colors.red);
     }
   }
 
