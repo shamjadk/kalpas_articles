@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kalpas_news_app/core/objectbox/favs_objectbox_store.dart';
 import 'package:kalpas_news_app/view/pages/home_page.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FavsObjectBoxStore.create();
   runApp(const ProviderScope(child: MyApp()));
 }
 
