@@ -13,6 +13,7 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cardPosition = useState<double>(0);
     final selectedTabIndex = useState<int>(0);
     return DefaultTabController(
       length: 2,
@@ -47,103 +48,141 @@ class HomePage extends HookConsumerWidget {
                   )
                 ]),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FutureBuilder(
-                future: ref.read(fetchDataProvider.future),
-                builder: (context, snapshot) {
-                  final data = snapshot.data;
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: data!.length,
-                      itemBuilder: (context, index) => Column(
-                        children: [
-                          InkWell(
-                            onTap: () => navPush(context,
-                                NewsDescriptionPage(model: data[index])),
-                            child: Card(
-                              elevation: 8,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          image: DecorationImage(
-                                              image: NetworkImage(data[index]
-                                                      .urlToImage ??
-                                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
-                                              fit: BoxFit.cover)),
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  2 /
-                                                  3.7,
-                                          child: Text(
-                                            data[index].title,
-                                            style: const TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.bold),
+          body: FutureBuilder(
+              future: ref.read(fetchDataProvider.future),
+              builder: (context, snapshot) {
+                final data = snapshot.data;
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: data!.length,
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () => navPush(
+                            context,
+                            NewsDescriptionPage(model: data[index]),
+                          ),
+                          onHorizontalDragUpdate: (details) {
+                            cardPosition.value += details.delta.dx;
+                          },
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                child: SizedBox(
+                                  width: 300,
+                                  child: Card(
+                                    elevation: 8,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 56,
+                                            height: 56,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(data[index]
+                                                            .urlToImage ??
+                                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
+                                                    fit: BoxFit.cover)),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  2 /
-                                                  3.7,
-                                          child: Text(
-                                            data[index].description ??
-                                                'No description',
-                                            style: const TextStyle(
-                                                overflow:
-                                                    TextOverflow.ellipsis),
+                                          const SizedBox(
+                                            width: 8,
                                           ),
-                                        ),
-                                        Text(
-                                          '📆 ${data[index].publishedAt}',
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.grey),
-                                        )
-                                      ],
-                                    )
-                                  ],
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        2 /
+                                                        3.7,
+                                                child: Text(
+                                                  data[index].title,
+                                                  style: const TextStyle(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        2 /
+                                                        3.7,
+                                                child: Text(
+                                                  data[index].description ??
+                                                      'No description',
+                                                  style: const TextStyle(
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                ),
+                                              ),
+                                              Text(
+                                                '📆 ${data[index].publishedAt}',
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          const SizedBox(
-                            height: 16,
-                          )
-                        ],
-                      ),
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const LinearProgressIndicator();
-                  } else if (snapshot.data == null) {
-                    return const Center(
-                      child: Text('null'),
-                    );
-                  } else {
-                    return const Text('error');
-                  }
-                }),
-          ),
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    ),
+                  );
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const LinearProgressIndicator();
+                } else if (snapshot.data == null) {
+                  return const Center(
+                    child: Text('null'),
+                  );
+                } else {
+                  return const Text('error');
+                }
+              }),
+          // body: switch (ref.read(fetchDataProvider)) {
+          //   AsyncData(:final value) => Builder(builder: (context) {
+          //       if (value == null) {
+          //         return const Text('null');
+          //       } else {
+          //         return ListView.builder(
+          //           itemCount: 10,
+          //           itemBuilder: (context, index) => Container(
+          //             width: 200,
+          //             height: 200,
+          //             color: Colors.red,
+          //             child: Text(value[index].title),
+          //           ),
+          //         );
+          //       }
+          //     }),
+          //   AsyncError(:final error) => Text(error.toString()),
+          //   _=> Builder(
+          //     builder: (context) {
+          //       return const LinearProgressIndicator();
+          //     }
+          //   )
+          // },
         ),
       ),
     );

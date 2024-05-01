@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kalpas_news_app/controller/navigator_controller.dart';
 import 'package:kalpas_news_app/model/news_model.dart';
+import 'package:kalpas_news_app/view/pages/demo_page.dart';
 
 class NewsDescriptionPage extends StatelessWidget {
   final NewsModel model;
@@ -24,23 +26,30 @@ class NewsDescriptionPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: MediaQuery.sizeOf(context).width,
-                height: 160,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                        image: NetworkImage(model.urlToImage ??
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
-                        fit: BoxFit.cover)),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.favorite_outline,
-                        color: Colors.black,
-                      )),
+              InkWell(
+                onTap: () => navPush(
+                    context,
+                    const SwipeableContainer(
+                      item: 'sss',
+                    )),
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  height: 160,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                          image: NetworkImage(model.urlToImage ??
+                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU'),
+                          fit: BoxFit.cover)),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.favorite_outline,
+                          color: Colors.black,
+                        )),
+                  ),
                 ),
               ),
               const SizedBox(

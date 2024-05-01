@@ -21,6 +21,9 @@ class ApiService {
         log(response.statusCode.toString());
       }
     } catch (e) {
+      if (e.toString().contains('connection error')) {
+        log('Connect to internet');
+      }
       log(e.toString());
     }
     return null;
