@@ -40,9 +40,12 @@ class News extends _$News {
     }
   }
 
-  Future<void> removeFromFav(int id) async {
+  Future<void> removeFromFav(int? id, BuildContext context) async {
     try {
-      box.remove(id);
+      box.remove(id!);
+      state = box.getAll();
+      Navigator.pop(context);
+      showSnackBar(context, 'Removed from favs', color: Colors.red);
     } catch (e) {
       log(e.toString());
     }

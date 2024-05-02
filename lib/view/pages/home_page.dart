@@ -49,50 +49,87 @@ class HomePage extends HookConsumerWidget {
           body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              FutureBuilder(
-                  future: ref.read(newsProvider.notifier).fetchData(),
-                  builder: (context, snapshot) {
-                    final data = snapshot.data;
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: data!.length,
-                        itemBuilder: (context, index) => Column(
+              SingleChildScrollView(
+                child: FutureBuilder(
+                    future: ref.read(newsProvider.notifier).fetchData(),
+                    builder: (context, snapshot) {
+                      final data = snapshot.data;
+                      if (snapshot.hasData) {
+                        return Column(
                           children: [
-                            GestureDetector(
-                                child: NewsCardWidget(
-                              model: data[index],
-                              favModel: null,
-                              isFav: false,
-                            )),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            ListView.separated(
+                              physics: const ClampingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: data!.length,
+                              itemBuilder: (context, index) => NewsCardWidget(
+                                model: data[index],
+                                favModel: null,
+                                isFav: false,
+                              ),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: 8,
+                              ),
+                            ),
                             const SizedBox(
                               height: 16,
                             )
                           ],
-                        ),
-                      );
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const Align(
-                          alignment: Alignment.topCenter,
-                          child: LinearProgressIndicator());
-                    } else if (snapshot.data == null) {
-                      return const Center(
-                        child: Text('null'),
-                      );
-                    } else {
-                      return const Text('error');
-                    }
-                  }),
-              ListView.builder(
-                itemCount: ref.watch(newsProvider)!.length,
-                itemBuilder: (context, index) {
-                  final data = ref.watch(newsProvider);
-                  return NewsCardWidget(
-                    model: null,
-                    isFav: true,
-                    favModel: data![index],
-                  );
-                },
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Align(
+                            alignment: Alignment.topCenter,
+                            child: LinearProgressIndicator());
+                      } else if (snapshot.data == null) {
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('Error'),
+                              IconButton(
+                                  onPressed: () {
+                                    ref.invalidate(newsProvider);
+                                  },
+                                  icon: const Icon(Icons.refresh))
+                            ],
+                          ),
+                        );
+                      } else {
+                        return const Text('Error');
+                      }
+                    }),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ListView.separated(
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: ref.watch(newsProvider)!.length,
+                      itemBuilder: (context, index) {
+                        final data = ref.watch(newsProvider);
+                        return NewsCardWidget(
+                          model: null,
+                          isFav: true,
+                          favModel: data![index],
+                        );
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 16,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    )
+                  ],
+                ),
               )
             ],
           ),

@@ -21,7 +21,10 @@ class TabWidget extends StatelessWidget {
     return Tab(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(color: selectedIndex==index?Colors.grey.shade100:Colors.transparent),
+        decoration: BoxDecoration(
+            color: selectedIndex == index
+                ? Colors.grey.shade200
+                : Colors.transparent),
         child: Row(
           children: [
             Icon(
