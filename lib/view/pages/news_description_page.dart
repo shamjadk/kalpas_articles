@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kalpas_news_app/controller/provider/api_provider.dart';
 import 'package:kalpas_news_app/core/objectbox/favs_objectbox_store.dart';
+import 'package:kalpas_news_app/core/utils/snack_bar_utils.dart';
 import 'package:kalpas_news_app/model/news_model.dart';
 import 'package:kalpas_news_app/model/objectbox/favs_entity_model.dart';
-import 'package:kalpas_news_app/objectbox.g.dart';
 
 class NewsDescriptionPage extends ConsumerWidget {
   final bool isFav;
@@ -15,14 +15,6 @@ class NewsDescriptionPage extends ConsumerWidget {
       required this.model,
       required this.isFav,
       required this.favModel});
-
-  Future<bool> checkExistance(Box<FavsEntityModel> box, String title) async {
-    Query<FavsEntityModel> queries =
-        box.query(FavsEntityModel_.title.equals(title)).build();
-
-    int resultCount = queries.count();
-    return resultCount > 0;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,8 +35,8 @@ class NewsDescriptionPage extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: FutureBuilder(
-              future:
-                  checkExistance(box, isFav ? favModel!.title : model!.title),
+              future: ref.read(newsProvider.notifier).checkObjectboxExistance(
+                  box, isFav ? favModel!.title : model!.title),
               builder: (context, snapshot) {
                 bool isStored = snapshot.data ?? false;
                 return Column(
@@ -77,7 +69,7 @@ class NewsDescriptionPage extends ConsumerWidget {
                                       color: Colors.red,
                                     )
                                   : InkWell(
-                                      onTap: () {
+                                      onTap: () {isStored?showSnackBar(context, 'Already added to favorites', color: Colors.blue):
                                         ref.read(newsProvider.notifier).addFavs(
                                             FavsEntityModel(
                                                 author: model!.author ??

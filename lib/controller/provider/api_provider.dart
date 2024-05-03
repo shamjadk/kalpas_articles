@@ -50,4 +50,12 @@ class News extends _$News {
       log(e.toString());
     }
   }
+
+  Future<bool> checkObjectboxExistance(Box<FavsEntityModel> box, String title) async {
+    Query<FavsEntityModel> queries =
+        box.query(FavsEntityModel_.title.equals(title)).build();
+
+    int resultCount = queries.count();
+    return resultCount > 0;
+  }
 }

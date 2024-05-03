@@ -3,6 +3,8 @@ import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kalpas_news_app/controller/navigator_controller.dart';
 import 'package:kalpas_news_app/controller/provider/api_provider.dart';
+import 'package:kalpas_news_app/core/objectbox/favs_objectbox_store.dart';
+import 'package:kalpas_news_app/core/utils/snack_bar_utils.dart';
 import 'package:kalpas_news_app/model/news_model.dart';
 import 'package:kalpas_news_app/model/objectbox/favs_entity_model.dart';
 import 'package:kalpas_news_app/view/pages/news_description_page.dart';
@@ -20,6 +22,7 @@ class NewsCardWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final box = FavsObjectBoxStore.instance.favBox;
     return GestureDetector(
       onTap: () => navPush(
         context,
@@ -30,45 +33,36 @@ class NewsCardWidget extends HookConsumerWidget {
         ),
       ),
       child: SwipeActionCell(
-        key: ObjectKey(model),
-        leadingActions: [
-          SwipeAction(
-              onTap: (handler) {
-                isFav
-                    ? ref
-                        .read(newsProvider.notifier)
-                        .removeFromFav(favModel!.id, context)
-                    : null;
-              },
-              color: Colors.red.shade100,
-              content: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ),
-                  Text(
-                    'Remove from\nFavorites',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10),
-                  )
-                ],
-              ))
-        ],
+        key: ObjectKey(favModel),
         trailingActions: [
           SwipeAction(
-            onTap: (handler) {
-              ref.read(newsProvider.notifier).addFavs(
-                  FavsEntityModel(
-                      author: model!.author ?? 'No author',
-                      title: model!.title,
-                      description: model!.description ?? 'No description',
-                      urlToImage: model!.urlToImage ??
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU',
-                      publishedAt: model!.publishedAt,
-                      content: model!.content),
-                  context);
+            onTap: (handler) async {
+              bool isStored = await ref
+                  .read(newsProvider.notifier)
+                  .checkObjectboxExistance(
+                      box, isFav ? favModel!.title : model!.title);
+              isStored
+                  ? Future.sync(() => showSnackBar(
+                      context, 'Already added to favorites',
+                      color: Colors.blue))
+                  : Future.sync(() => ref.read(newsProvider.notifier).addFavs(
+                      FavsEntityModel(
+                          author: isFav
+                              ? favModel!.author
+                              : model!.author ?? 'No author',
+                          title: isFav ? favModel!.title : model!.title,
+                          description: isFav
+                              ? favModel!.description
+                              : model!.description ?? 'No description',
+                          urlToImage: isFav
+                              ? favModel!.urlToImage
+                              : model!.urlToImage ??
+                                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU',
+                          publishedAt: isFav
+                              ? favModel!.publishedAt
+                              : model!.publishedAt,
+                          content: isFav ? favModel!.content : model!.content),
+                      context));
             },
             color: Colors.red.shade100,
             content: const Column(
