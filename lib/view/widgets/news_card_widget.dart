@@ -34,9 +34,11 @@ class NewsCardWidget extends HookConsumerWidget {
         leadingActions: [
           SwipeAction(
               onTap: (handler) {
-                ref
-                    .read(newsProvider.notifier)
-                    .removeFromFav(favModel!.id, context);
+                isFav
+                    ? ref
+                        .read(newsProvider.notifier)
+                        .removeFromFav(favModel!.id, context)
+                    : null;
               },
               color: Colors.red.shade100,
               content: const Column(
@@ -60,13 +62,12 @@ class NewsCardWidget extends HookConsumerWidget {
               ref.read(newsProvider.notifier).addFavs(
                   FavsEntityModel(
                       author: model!.author ?? 'No author',
-                      title:model!.title,
+                      title: model!.title,
                       description: model!.description ?? 'No description',
                       urlToImage: model!.urlToImage ??
-                              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU',
-                      publishedAt:
-                           model!.publishedAt,
-                      content:  model!.content),
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaUob4SHHVNhRBH-S7vhnPP8C6FLtbuyrwGVsUeXw1BPXqCHalzzqJ5XgVvVZ939LTkq4&usqp=CAU',
+                      publishedAt: model!.publishedAt,
+                      content: model!.content),
                   context);
             },
             color: Colors.red.shade100,
